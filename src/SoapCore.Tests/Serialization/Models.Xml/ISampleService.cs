@@ -1,6 +1,7 @@
 using System.IO;
 using System.ServiceModel;
 using System.Threading.Tasks;
+using System.Xml;
 using System.Xml.Serialization;
 
 namespace SoapCore.Tests.Serialization.Models.Xml
@@ -8,6 +9,14 @@ namespace SoapCore.Tests.Serialization.Models.Xml
 	[ServiceContract(Namespace = ServiceNamespace.Value, ConfigurationName = "SampleService.SampleServiceSoap")]
 	public interface ISampleService
 	{
+		[OperationContract(Action = ServiceNamespace.Value + nameof(PingXmlElementArgument), ReplyAction = "*")]
+		[XmlSerializerFormat(SupportFaults = true)]
+		string PingXmlElementArgument(XmlElement e);
+
+		[OperationContract(Action = ServiceNamespace.Value + nameof(PingXmlElementReturn), ReplyAction = "*")]
+		[XmlSerializerFormat(SupportFaults = true)]
+		XmlElement PingXmlElementReturn(string s);
+
 		[OperationContract(Action = ServiceNamespace.Value + nameof(Ping), ReplyAction = "*")]
 		[XmlSerializerFormat(SupportFaults = true)]
 		string Ping(string s);

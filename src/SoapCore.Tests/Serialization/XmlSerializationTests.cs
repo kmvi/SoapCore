@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using DeepEqual.Syntax;
 using Moq;
 using Shouldly;
@@ -59,6 +60,69 @@ namespace SoapCore.Tests.Serialization
 
 			// check output paremeters serialization
 			pingResult_client.ShouldBe(output_value);
+		}
+
+		[Theory]
+		[MemberData(nameof(ServiceFixture<ISampleService>.SoapSerializersList), MemberType = typeof(ServiceFixture<ISampleService>))]
+		public void TestPingXmlElementArgumentSerialization(SoapSerializer soapSerializer)
+		{
+			var sampleServiceClient = _fixture.GetSampleServiceClient(soapSerializer);
+
+			var doc = new XmlDocument();
+			doc.LoadXml(@"<test>
+<a>value</a>
+<b/>
+</test>");
+
+			var input_value = doc.DocumentElement;
+			const string output_value = "output_value";
+
+			_fixture.ServiceMock
+				.Setup(x => x.PingXmlElementArgument(It.IsAny<XmlElement>()))
+				.Callback(
+					(XmlElement s_service) =>
+					{
+						// check input paremeters serialization
+						s_service.ShouldBe(input_value);
+					})
+				.Returns(output_value);
+
+			var pingResult_client = sampleServiceClient.PingXmlElementArgument(input_value);
+
+			// check output paremeters serialization
+			pingResult_client.ShouldBe(output_value);
+		}
+
+		[Theory]
+		[MemberData(nameof(ServiceFixture<ISampleService>.SoapSerializersList), MemberType = typeof(ServiceFixture<ISampleService>))]
+		public void TestPingXmlElementReturnSerialization(SoapSerializer soapSerializer)
+		{
+			var sampleServiceClient = _fixture.GetSampleServiceClient(soapSerializer);
+
+			var doc = new XmlDocument();
+			doc.LoadXml(@"<test>
+<a>value</a>
+<b/>
+</test>");
+
+			const string input_value = "input_value";
+			var output_value = doc.DocumentElement;
+
+			_fixture.ServiceMock
+				.Setup(x => x.PingXmlElementReturn(It.IsAny<string>()))
+				.Callback(
+					(string s_service) =>
+					{
+						// check input paremeters serialization
+						s_service.ShouldBe(input_value);
+					})
+				.Returns(output_value);
+
+			var pingResult_client = sampleServiceClient.PingXmlElementReturn(input_value);
+
+			// check output paremeters serialization
+			pingResult_client.Name.ToString().ShouldBe(output_value.Name.ToString());
+			pingResult_client.ChildNodes.Count.ShouldBe(pingResult_client.ChildNodes.Count);
 		}
 
 		[Theory]

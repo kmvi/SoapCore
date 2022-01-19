@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
+using System.Xml;
 using System.Xml.Serialization;
 using Microsoft.CSharp;
 
@@ -45,7 +46,19 @@ namespace SoapCore
 							{
 								// case [XmlElement("parameter")] int parameter
 								// case [XmlArray("parameter")] int[] parameter
-								return DeserializeObject(xmlReader, parameterType, parameterName, parameterNs);
+								if (parameterType == typeof(XmlElement))
+								{
+									xmlReader.ReadStartElement(parameterName, parameterNs);
+									xmlReader.MoveToContent();
+									var doc = new XmlDocument();
+									doc.Load(xmlReader.ReadSubtree());
+									xmlReader.ReadEndElement();
+									return doc.DocumentElement;
+								}
+								else
+								{
+									return DeserializeObject(xmlReader, parameterType, parameterName, parameterNs);
+								}
 							}
 							else
 							{

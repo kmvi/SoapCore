@@ -180,6 +180,12 @@ namespace SoapCore
 							writer.WriteEndElement();
 						}
 					}
+					else if (_result is XmlElement e)
+					{
+						writer.WriteStartElement(_resultName, _serviceNamespace);
+						e.WriteTo(writer);
+						writer.WriteEndElement();
+					}
 					else
 					{
 						var serializer = CachedXmlSerializer.GetXmlSerializer(resultType, xmlName, xmlNs);
