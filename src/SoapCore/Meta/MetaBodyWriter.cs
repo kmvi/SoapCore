@@ -1074,6 +1074,25 @@ namespace SoapCore.Meta
 
 						_arrayToBuild.Enqueue(type);
 					}
+					else if (type == typeof(XmlElement) && !isAttribute)
+					{
+						if (string.IsNullOrEmpty(name))
+						{
+							name = typeName;
+						}
+
+						writer.WriteAttributeString("name", name);
+						WriteQualification(writer, isUnqualified);
+
+						writer.WriteAttributeString("nillable", "true");
+
+						writer.WriteStartElement("complexType", Namespaces.XMLNS_XSD);
+						writer.WriteStartElement("sequence", Namespaces.XMLNS_XSD);
+						writer.WriteStartElement("any", Namespaces.XMLNS_XSD);
+						writer.WriteEndElement(); // any
+						writer.WriteEndElement(); // sequence
+						writer.WriteEndElement(); // complexType
+					}
 					else
 					{
 						if (string.IsNullOrEmpty(name))
