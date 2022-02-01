@@ -877,6 +877,8 @@ namespace SoapCore
 				}
 			}
 
+			xmlNamespaceManager.AddNamespace("tns", _service.GeneralContract.Namespace);
+
 			return xmlNamespaceManager;
 		}
 	}
