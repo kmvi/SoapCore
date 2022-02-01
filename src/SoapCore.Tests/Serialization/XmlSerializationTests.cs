@@ -74,20 +74,22 @@ namespace SoapCore.Tests.Serialization
 <b/>
 </test>");
 
-			var input_value = doc.DocumentElement;
+			var input_value_e = doc.DocumentElement;
+			const string input_value_s = "input_value";
 			const string output_value = "output_value";
 
 			_fixture.ServiceMock
-				.Setup(x => x.PingXmlElementArgument(It.IsAny<XmlElement>()))
+				.Setup(x => x.PingXmlElementArgument(It.IsAny<XmlElement>(), It.IsAny<string>()))
 				.Callback(
-					(XmlElement s_service) =>
+					(XmlElement e_service, string s_service) =>
 					{
 						// check input paremeters serialization
-						s_service.ShouldBe(input_value);
+						e_service.ShouldBe(input_value_e);
+						s_service.ShouldBe(input_value_s);
 					})
 				.Returns(output_value);
 
-			var pingResult_client = sampleServiceClient.PingXmlElementArgument(input_value);
+			var pingResult_client = sampleServiceClient.PingXmlElementArgument(input_value_e, input_value_s);
 
 			// check output paremeters serialization
 			pingResult_client.ShouldBe(output_value);

@@ -50,9 +50,20 @@ namespace SoapCore
 								{
 									xmlReader.ReadStartElement(parameterName, parameterNs);
 									xmlReader.MoveToContent();
+
 									var doc = new XmlDocument();
-									doc.Load(xmlReader.ReadSubtree());
+									if (xmlReader.NodeType != XmlNodeType.EndElement)
+									{
+										doc.Load(xmlReader.ReadSubtree());
+									}
+
+									while (xmlReader.NodeType != XmlNodeType.EndElement || xmlReader.LocalName != parameterName)
+									{
+										xmlReader.Skip();
+									}
+
 									xmlReader.ReadEndElement();
+
 									return doc.DocumentElement;
 								}
 								else

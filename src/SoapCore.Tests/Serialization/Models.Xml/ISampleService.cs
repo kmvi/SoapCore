@@ -11,7 +11,7 @@ namespace SoapCore.Tests.Serialization.Models.Xml
 	{
 		[OperationContract(Action = ServiceNamespace.Value + nameof(PingXmlElementArgument), ReplyAction = "*")]
 		[XmlSerializerFormat(SupportFaults = true)]
-		string PingXmlElementArgument(XmlElement e);
+		string PingXmlElementArgument(XmlElement e, string s);
 
 		[OperationContract(Action = ServiceNamespace.Value + nameof(PingXmlElementReturn), ReplyAction = "*")]
 		[XmlSerializerFormat(SupportFaults = true)]
