@@ -457,9 +457,13 @@ namespace SoapCore.Meta
 
 					foreach (var value in Enum.GetValues(toBuild))
 					{
-						writer.WriteStartElement("enumeration", Namespaces.XMLNS_XSD);
-						writer.WriteAttributeString("value", value.ToString());
-						writer.WriteEndElement(); // enumeration
+						var member = toBuild.GetMember(value.ToString())[0];
+						if (member.GetCustomAttribute(typeof(ObsoleteAttribute)) == null)
+						{
+							writer.WriteStartElement("enumeration", Namespaces.XMLNS_XSD);
+							writer.WriteAttributeString("value", value.ToString());
+							writer.WriteEndElement(); // enumeration
+						}
 					}
 
 					writer.WriteEndElement(); // restriction
